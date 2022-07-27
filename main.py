@@ -3,6 +3,8 @@ from flask import Flask, render_template, request
 import cv2
 import numpy as np
 import base64
+import imutils 
+from skimage.filters import threshold_local
 
 app = Flask(__name__)
 
@@ -34,11 +36,12 @@ def upload_file():
         to_send = ''
     else:
         faceDetected = True
+        # num_faces = 3
         num_faces = len(faces)
         
         # Draw a rectangle
-        for item in faces:
-            draw_rectangle(image, item['rect'])
+        for box_coords in faces:
+            draw_rectangle(image, box_coords)
         
         # Save
         #cv2.imwrite(filename, image)
@@ -55,29 +58,56 @@ def upload_file():
 # ----------------------------------------------------------------------------------  
 def detect_faces(img):
     '''Detect face in an image'''
-    
+    # image1 = cv2.imread(img)
+    image1 = img
+    h, w = image1.shape[0:2]
+
+    # Make border for easier crop
+    image = cv2.copyMakeBorder(
+        image1,
+        30,
+        30,
+        30,
+        30,
+        cv2.BORDER_CONSTANT,
+        value=(255,255,255)
+    )
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    gray = cv2.GaussianBlur(gray, (5, 5), 0)
+
+    ret, th = cv2.threshold(gray, 210, 235, 1)
+
+    cnts, hierarchy = cv2.findContours(th.copy(), cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    cnts = sorted(cnts, key=cv2.contourArea, reverse=True)
+
+    best_contours = list()
+
+    for c in cnts:
+        box = cv2.minAreaRect(c)
+        box = cv2.cv.BoxPoints(box) if imutils.is_cv2() else cv2.boxPoints(box)
+        box = np.array(box, dtype="int")
+        Area = image.shape[0] * image.shape[1]
+        if Area / 10 < cv2.contourArea(box) < Area * 2 / 3:
+            #print(box)
+            best_contours.append(box)
+            #cv2.drawContours(image, [box], -1, (0, 255, 0), 2)
+
     faces_list = []
 
-    # Convert the test image to gray scale (opencv face detector expects gray images)
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    for c in best_contours:
+        # get the bounding rect
+        (x, y, w, h) = cv2.boundingRect(c)
 
-    # Load OpenCV face detector (LBP is faster)
-    face_cascade = cv2.CascadeClassifier('opencv-files/lbpcascade_frontalface.xml')
+        # faces_list.append(image[y:y + h, x:x + w])
+        faces_list.append(cv2.boundingRect(c))
 
-    # Detect multiscale images (some images may be closer to camera than others)
-    # result is a list of faces
-    faces = face_cascade.detectMultiScale(gray, scaleFactor=1.2, minNeighbors=5);
-
-    # If not face detected, return empty list  
-    if  len(faces) == 0:
-        return faces_list
     
-    for i in range(0, len(faces)):
-        (x, y, w, h) = faces[i]
-        face_dict = {}
-        face_dict['face'] = gray[y:y + w, x:x + h]
-        face_dict['rect'] = faces[i]
-        faces_list.append(face_dict)
+    # for i in range(0, len(best_contours)):
+    #     (x, y, w, h) = faces[i]
+    #     face_dict = {}
+    #     face_dict['face'] = gray[y:y + w, x:x + h]
+    #     face_dict['rect'] = faces[i]
+    #     faces_list.append(face_dict)
 
     # Return the face image area and the face rectangle
     return faces_list
@@ -88,7 +118,10 @@ def detect_faces(img):
 def draw_rectangle(img, rect):
     '''Draw a rectangle on the image'''
     (x, y, w, h) = rect
-    cv2.rectangle(img, (x, y), (x + w, y + h), (0, 255, 255), 2)
+    x = x-30
+    y = y-30
+
+    cv2.rectangle(img, (x, y), (x + w, y + h), (0, 0, 255), 5)
 
 if __name__ == "__main__":
     # Only for debugging while developing

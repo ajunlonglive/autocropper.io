@@ -4,7 +4,7 @@ This is a very simple Flask app that let's the user upload a image and detects h
 
 ## Hosting on Heroku
 
-Try it [here](https://face-detection-flask.herokuapp.com/).
+Try it [here](https://scanned-photo-split.herokuapp.com/).
 
 ##### Generate pipfile with command:
 
