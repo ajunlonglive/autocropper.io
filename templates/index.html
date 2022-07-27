@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <title>Scanned Photo demo</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+  <script src="./js/main.js"></script>
 </head>
 
 <body>
@@ -25,8 +27,15 @@
                 Browse <input type="file" name="image" style="display: none;">
             </label>
             <input type="submit" value="Upload your image" class="btn btn-primary">
+
+            <label for="exifDate">Photo dates:</label>
+
+            <input type="date" id="exifDate" name="trip-start"
+                value="2000-01-01"
+                min="1900-01-01" max="2022-12-31">
         </div>
     </form>
+        
 </header>
 
 <div class="text-center">
