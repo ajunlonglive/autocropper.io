@@ -1,31 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <style>
+
+    body {
+        background-image: linear-gradient(to top, #cfd9df 0%, #e2ebf0 100%);
+    }
+    div.gallery {
+    border: 1px solid #ccc;
+    }
+
+    div.gallery:hover {
+    border: 1px solid #777;
+    }
+
+    div.gallery img {
+    width: 100%;
+    height: auto;
+    }
+
+    div.desc {
+    padding: 15px;
+    text-align: center;
+    }
+
+    * {
+    box-sizing: border-box;
+    }
+
+    .responsive {
+    padding: 0 6px;
+    float: left;
+    width: 24.99999%;
+    }
+
+    @media only screen and (max-width: 700px) {
+    .responsive {
+        width: 49.99999%;
+        margin: 6px 0;
+    }
+    }
+
+    @media only screen and (max-width: 500px) {
+    .responsive {
+        width: 100%;
+    }
+    }
+
+    .clearfix:after {
+    content: "";
+    display: table;
+    clear: both;
+    }
+    </style>
   <meta charset="UTF-8">
   <title>Scanned Photo demo</title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-  <script src="./js/main.js"></script>
+  <!-- <script src="./styling/main.js"></script> -->
 </head>
 
 <body>
 
 <div class = "container">
     <div class = "starter-template">
-        <h1>Photo scan detector example</h1>
-        <p class = "lead"> Try uploading an image to see if your scans are detected </p>
-        <p> Detection using <a href="https://docs.opencv.org/2.4/modules/objdetect/doc/cascade_classification.html" target="blank"> Cascade Classification </a> | Powered by Python, Flask, OpenCV </p>
+        <h1>Scan multiple photos in a single scan with AutoCropper photo cropping</h1>
+        <p class = "lead"> Upload an image and output several cropped individual images </p>
+        <p> Powered by Python, Flask, OpenCV </p>
         <p> Image size limit: 2 MB </p>
-        <p> By Tucker Bendix - July, 2022 </p>
+
+        <p>I created this because the automatic cropping in Apple's [ImageCapture](https://support.apple.com/guide/image-capture/scan-images-imgcp1004/mac) and [Epson's ScanSmart](https://epson.com/Support/wa00870) software requires a preview scan (~8 seconds), approval of the detected edges (~5 seconds let's say), followed by 3 separate scans for each individual photo (~120 seconds for just 3 photos!).</p>
+
+        <p>If you can fit 4 photos on a scanner bed at once, you should be able to press Scan and receive 4 separate images in return.
+
+            Unfortunately, this is not the case with Apple’s native Image Capture or Epson’s SmartScan suite. Auto detecting multiple photos requires a preview scan, confirmation of the bounding boxes, and is not easily repeatable in a monotonous way that scanning hundreds or thousands of photos requires. 
+           
+            Other paid softwares exist that are infinitely better than those options, but they are expensive.</p>
+
+            <p>Takes in multi-page PDF of 8x12in scans with (up to) 4 individual photos on each page (separated by scanner bed whitespace), outputs all images cropped. Allows one to efficiently scan hundreds/thousands of family photos fast and efficiently, without manually cropping, or using Epson/Apple ImageCapture autocropping which requires a preview scan and tedious extra steps that add significant time.</p>
+
+        <p>Comparison for scanning 3 photos in one single scan (and getting 3 separate files as output):
+            <ul>
+                <li>Epson SmartScan: 84 seconds (and also not great at auto detection)
+                </li>
+                <li>Apple ImageCapture: 63 seconds</li>
+                <li>My method: 9 seconds</li>
+            </ul>
+        </p>
+        <p class="pizza"> By Tucker Bendix - July, 2022 </p>
     </div>
 </div>
 
 <header class="navbar">
     <form action="/upload" method="post" enctype="multipart/form-data" >
         <div align="center">
+
             <label class="btn btn-default btn-file">
-                Browse <input type="file" name="image" style="display: none;">
+                Browse 
+                <input type="file" name="image" style="display: none;">
             </label>
+
             <input type="submit" value="Upload your image" class="btn btn-primary">
 
             <label for="exifDate">Photo dates:</label>
@@ -38,24 +112,41 @@
         
 </header>
 
-<div class="text-center">
+<div>
     {% if init %}
         {% if faceDetected %}
             <div class="alert alert-success" style="margin-top:18px;">
-                <strong>Yes!</strong> {{ num_faces }} face(s) detected!
+                <strong>Yes!</strong> {{ num_faces }} photo(s) detected!
             </div>
+
+            
             {% if image_to_show %}
-                <div>
-                    <img src="{{ image_to_show }}">
-                </div>
+                {%for i in range(0, num_faces)%}
+                <div class="responsive">
+                        <div class="gallery">
+                        <a target="_blank" href="naoexiste.jpg">
+                            <img src="{{ image_to_show[i] }}" alt="Cinque Terre" width="600" height="400">
+                        </a>
+                        <div class="desc">Description</div>
+                        </div>
+                    </div>
+                {%endfor%}
             {% endif %}
+        
+
         {% else %}
             <div class="alert alert-danger" style="margin-top:18px;">
-                <strong>Nope!</strong> No face detected
+                <strong>Nope!</strong> No photos detected
             </div>
         {% endif %}
     {% endif %}
 </div>
+
+<div class="clearfix"></div>
+<div style="padding:6px;">
+    <p>www.github.com/tmb5cg</p>
+  </div>
+
 
 </body>
 </html>

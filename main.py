@@ -36,29 +36,35 @@ def upload_file():
         to_send = ''
     else:
         faceDetected = True
-        # num_faces = 3
         num_faces = len(faces)
         
-        # Draw a rectangle
-        for box_coords in faces:
-            draw_rectangle(image, box_coords)
+        # Draw a rectangle - commented out because no need
+        # for box_coords in faces:
+        #     draw_rectangle(image, box_coords)
         
         # Save
-        #cv2.imwrite(filename, image)
+        # cv2.imwrite("filename", image)
         
+        images = []
         # In memory
-        image_content = cv2.imencode('.jpg', image)[1].tostring()
-        encoded_image = base64.b64encode(image_content)
-        to_send = 'data:image/jpg;base64, ' + str(encoded_image, 'utf-8')
+        images_to_send = []
+        for box_coords in faces:
+            # (x, y), (x + w, y + h)
+            (x, y, w, h) = box_coords
+            # cropped = image[x:y, (x+w):(y+h)]
+            cropped = image[y:y+h, x:x+w]
+            image_content = cv2.imencode('.jpg', cropped)[1].tostring()
+            encoded_image = base64.b64encode(image_content)
+            to_send = 'data:image/jpg;base64, ' + str(encoded_image, 'utf-8')
+            images_to_send.append(to_send)
 
-    return render_template('index.html', faceDetected=faceDetected, num_faces=num_faces, image_to_show=to_send, init=True)
+    return render_template('index.html', faceDetected=faceDetected, num_faces=num_faces, image_to_show=images_to_send, init=True)
 
 # ----------------------------------------------------------------------------------
 # Detect faces using OpenCV
 # ----------------------------------------------------------------------------------  
 def detect_faces(img):
     '''Detect face in an image'''
-    # image1 = cv2.imread(img)
     image1 = img
     h, w = image1.shape[0:2]
 
@@ -88,9 +94,7 @@ def detect_faces(img):
         box = np.array(box, dtype="int")
         Area = image.shape[0] * image.shape[1]
         if Area / 10 < cv2.contourArea(box) < Area * 2 / 3:
-            #print(box)
             best_contours.append(box)
-            #cv2.drawContours(image, [box], -1, (0, 255, 0), 2)
 
     faces_list = []
 
@@ -100,14 +104,6 @@ def detect_faces(img):
 
         # faces_list.append(image[y:y + h, x:x + w])
         faces_list.append(cv2.boundingRect(c))
-
-    
-    # for i in range(0, len(best_contours)):
-    #     (x, y, w, h) = faces[i]
-    #     face_dict = {}
-    #     face_dict['face'] = gray[y:y + w, x:x + h]
-    #     face_dict['rect'] = faces[i]
-    #     faces_list.append(face_dict)
 
     # Return the face image area and the face rectangle
     return faces_list
