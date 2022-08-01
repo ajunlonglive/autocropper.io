@@ -24,7 +24,7 @@
 <body>
     <section class="header">
         <nav>
-            <a href="/"><img src="static/logo.png"></a>
+            <a href="index.html"><img src="static/logo.png"></a>
             <div class="nav-links" id="navLinks">
                 <i class="fa fa-times" onclick="hideMenu()"></i>
 
@@ -37,77 +37,14 @@
             </div>
             <i class="fa fa-bars" onclick="showMenu()"></i>
         </nav>
+        
+
+        <div class="text-box">
+            <h1>Scan your photos more efficiently</h1>
+            <p>You can fit 4 photos on a scanner, but only get 1 scan in return. You should get 4 in return.</p>
+            <a href="" class="hero-btn">Try Autocropper now</a>
+        </div>
     </section>
-
-    
-
-<!-- ---- Typical scanning methods ----  -->
-
-
-<!-- ---- Typical scanning methods ----  -->
-{% if init %}
-{% if image_to_show %}
-<section class="scanningmethods">
-    <h1>{{ num_faces }} photo(s) detected! </h1>
-    <p>insert button to download zip here</p>
-
-    <div class="row">
-        {%for i in range(0, num_faces)%}
-        <div class="method-col">
-            <h3>Image {{ i+1 }}</h3>
-            <img src="{{ image_to_show[i] }}" alt="">
-            <div class="layer">
-                <!-- <h3>LONDON</h3> -->
-            </div>
-        </div>
-        {%endfor%}
-
-    </div>
-    
-    <h3>Manually scanning in batches</h3>
-    <h3>Shipping to scan companies</h3>
-</section>
-{% endif %}
-{% endif %}
-
-<!-- ----Overview and Features ---- -->
-<section class="howitworks">
-    <h1>Upload a Photo</h1>
-    <p>AutoCropper will automatically detect and extract the individual photos.</p>
-    <form action="/upload" method="post" enctype="multipart/form-data">
-        <label class="btn btn-default btn-file">
-            Browse
-            <input type="file" name="image" style="display: none;">
-        </label>
-
-        <input type="submit" value="Upload your image" class="btn btn-primary">
-    </form>
-
-    <div class="row">
-        <div class="functionality-col">
-            <h3>intermediate</h3>
-            <p>lorem ipsum pizza</p>
-        </div>
-
-        <div class="functionality-col">
-            <h3>Other thing</h3>
-            <p>lorem ipsum pizza</p>
-        </div>
-
-        <div class="functionality-col">
-            <h3>Post Graduation</h3>
-            <p>lorem ipsum pizza</p>
-        </div>
-
-    </div>
-</section>
-
-
-
-
-
-
-
 
     <!-- -----JavaScript for Toggle Menu------ -->
     <script>
@@ -121,11 +58,8 @@
             // change specific style element of navLinks
             navLinks.style.right = "-200px";
         }
-
-        function thisFileUpload() {
-            document.getElementById("file").click();
-        }
     </script>
+
 
 </body>
 
