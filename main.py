@@ -42,7 +42,15 @@ def download_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'],
                                filename, as_attachment=False)
 
-@app.route('/getscans', methods=['POST'])
+@app.route('/test', methods=['POST', 'GET'])
+def test():
+    x="test"
+    y = "jon@gmail.com"
+    t = request.headers
+    print(str(t))
+    return jsonify(username = x, email = y)
+
+@app.route('/getscans', methods=['POST', 'GET'])
 def getscans():
     file = request.files['image']
 
@@ -99,7 +107,7 @@ def getscans():
             images_to_send.append(to_send)
 
     response = {
-        "images": encoded_images,
+        "images": images_to_send,
         "age": 30,
         "city": "New York"
     }
