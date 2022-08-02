@@ -83,7 +83,7 @@ def getscans():
             fancy_autocropped = autocrop(cropped)
 
             # images_filepaths.append(save_image_to_disk(cropped, count))
-            images_filepaths.append(save_image_to_disk(fancy_autocropped, count))
+            # images_filepaths.append(save_image_to_disk(fancy_autocropped, count))
 
 
             # image_content = cv2.imencode('.jpg', cropped)[1].tostring()
@@ -143,7 +143,7 @@ def upload_file():
             fancy_autocropped = autocrop(cropped)
 
             # images_filepaths.append(save_image_to_disk(cropped, count))
-            images_filepaths.append(save_image_to_disk(fancy_autocropped, count))
+            # images_filepaths.append(save_image_to_disk(fancy_autocropped, count))
 
 
             # image_content = cv2.imencode('.jpg', cropped)[1].tostring()
@@ -159,8 +159,7 @@ def upload_file():
     return render_template('index.html', faceDetected=faceDetected, 
                                          num_faces=num_faces, 
                                          image_to_show=images_to_send, 
-                                         init=True,
-                                         filenames = images_filepaths)
+                                         init=True)
 
 def save_image_to_disk(img, i):
     test = im.fromarray(img)
