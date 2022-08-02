@@ -104,7 +104,7 @@ def getscans():
         "city": "New York"
     }
 
-    return jsonify(response)
+    return response
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
