@@ -1,7 +1,7 @@
 import os
 import random
 import string
-from flask import Flask, redirect, render_template, request, send_from_directory, url_for
+from flask import Flask, jsonify, redirect, render_template, request, send_from_directory, url_for
 from flask import make_response
 import cv2
 from PIL import Image as im
@@ -104,7 +104,7 @@ def getscans():
         "city": "New York"
     }
 
-    return response
+    return jsonify(response)
 
 @app.route('/upload', methods=['POST'])
 def upload_file():
