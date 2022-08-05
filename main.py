@@ -3,6 +3,7 @@ import random
 import string
 from flask import Flask, jsonify, redirect, render_template, request, send_from_directory, url_for
 from flask import make_response
+from flask_cors import CORS, cross_origin
 import cv2
 from PIL import Image as im
 import numpy as np
@@ -24,17 +25,6 @@ def start_page():
     # print("Start")
     return render_template('index.html')
 
-# @app.route('/uploader', methods=['GET', 'POST'])
-# def uploader():
-#     if request.method == 'POST':
-#         # do stuff when the form is submitted
-
-#         # redirect to end the POST handling
-#         # the redirect can be to the same route or somewhere else
-#         return redirect(url_for('index'))
-
-#     # show the form, it wasn't submitted
-#     return render_template('uploader.html')
 
 @app.route('/uploads/<path:filename>')
 def download_file(filename):
@@ -83,6 +73,9 @@ def getscans():
         # for json response
         encoded_images = []
 
+        # new test
+        img_objects = []
+
         for box_coords in faces:
             count+=1
             (x, y, w, h) = box_coords
@@ -104,13 +97,16 @@ def getscans():
             # https://base64.guru/converter/decode/image/png
             # this actually works using Postman if you remove the data:image/jpg;base64 bullshit
 
+     
             images_to_send.append(to_send)
+
 
     response = {
         "images": images_to_send,
         "age": 30,
         "city": "New York"
     }
+
 
     return response
 
