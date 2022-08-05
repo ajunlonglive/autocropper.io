@@ -7,6 +7,11 @@ __pycache__/
 *.so
 
 # React stuff manually added by me
+client/node_modules
+client/public
+client/src
+client/package-lock.json
+client/package.json 
 
 # Distribution / packaging
 .Python
