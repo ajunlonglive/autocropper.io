@@ -12,7 +12,10 @@ import imutils
 from skimage.filters import threshold_local
 import json
 
-app = Flask(__name__)
+# app = Flask(__name__)
+
+app = Flask(__name__,static_folder='client/build',static_url_path='')
+cors = CORS(app)
 
 UPLOAD_FOLDER = os.path.basename('uploads')
 DOWNLOAD_FOLDER = os.path.basename('downloads')
@@ -20,19 +23,22 @@ DOWNLOAD_FOLDER = os.path.basename('downloads')
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['DOWNLOAD_FOLDER'] = DOWNLOAD_FOLDER
 
-@app.route("/")
-def start_page():
-    # print("Start")
-    return render_template('index.html')
+# @app.route("/")
+# @cross_origin()
+# def start_page():
+#     # print("Start")
+#     return render_template('index.html')
 
 
 @app.route('/uploads/<path:filename>')
+@cross_origin()
 def download_file(filename):
     # print("pizzaaa")
     return send_from_directory(app.config['UPLOAD_FOLDER'],
                                filename, as_attachment=False)
 
 @app.route('/test', methods=['POST', 'GET'])
+@cross_origin()
 def test():
     x="test"
     y = "jon@gmail.com"
@@ -41,6 +47,7 @@ def test():
     return jsonify(username = x, email = y)
 
 @app.route('/getscans', methods=['POST', 'GET'])
+@cross_origin()
 def getscans():
     file = request.files['image']
 
@@ -111,6 +118,7 @@ def getscans():
     return response
 
 @app.route('/upload', methods=['POST'])
+@cross_origin()
 def upload_file():
     file = request.files['image']
 
@@ -417,6 +425,12 @@ def autocrop(input_img):
         return input_img
 
 
-if __name__ == "__main__":
-    # Only for debugging while developing
-    app.run(host='0.0.0.0', debug=True, port=80)
+@app.route('/')
+def serve():
+    return send_from_directory(app.static_folder, 'index.html')
+if __name__ == '__main__':
+    app.run(host='0.0.0.0')
+
+# if __name__ == "__main__":
+#     # Only for debugging while developing
+#     app.run(host='0.0.0.0', debug=True, port=80)
