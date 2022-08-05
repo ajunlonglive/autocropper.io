@@ -6,9 +6,10 @@ __pycache__/
 # C extensions
 *.so
 
+# React stuff manually added by me
+
 # Distribution / packaging
 .Python
-build/
 develop-eggs/
 dist/
 downloads/

@@ -44,6 +44,7 @@ def test():
     y = "jon@gmail.com"
     t = request.headers
     print(str(t))
+    print(str(app.static_folder))
     return jsonify(username = x, email = y)
 
 @app.route('/getscans', methods=['POST', 'GET'])
