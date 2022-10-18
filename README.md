@@ -1,4 +1,4 @@
-# photoscan_splitter
+# Autocropper
 
 This is a very simple Flask app that let's the user upload a image and detects how many (if any) faces are there in the picture.
 
